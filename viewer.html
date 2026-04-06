@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document Preview</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #2b2b2b; }
+#bar { background: #323639; color: #fff; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 48px; }
+#bar .title { font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60%; }
+#bar .controls { display: flex; align-items: center; gap: 8px; }
+#bar .badge { background: #4a4d50; padding: 3px 10px; border-radius: 12px; font-size: 12px; color: #ccc; }
+#bar button { background: #4a4d50; border: none; color: #fff; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+#bar button:hover { background: #5a5d60; }
+.page { margin: 64px auto 40px; max-width: 800px; background: #fff; border-radius: 4px; box-shadow: 0 2px 12px rgba(0,0,0,0.4); padding: 48px 56px; }
+.page .doc-title { font-size: 22px; font-weight: 700; color: #1f2937; margin-bottom: 6px; }
+.page .doc-meta { font-size: 13px; color: #6b7280; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb; }
+.section { margin-bottom: 24px; }
+.section-head { font-size: 15px; font-weight: 600; color: #1f4e79; margin-bottom: 6px; }
+.section-body { font-size: 14px; color: #4b5563; line-height: 1.65; }
+.watermark { text-align: center; color: #9ca3af; font-size: 12px; margin-top: 32px; padding-top: 16px; border-top: 1px solid #e5e7eb; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div id="bar">
+  <span class="title" id="barTitle">Document</span>
+  <div class="controls">
+    <span class="badge" id="barCategory">Document</span>
+    <button onclick="alert('In the live version, this downloads the original file.')">Download</button>
+  </div>
+</div>
+
+<div class="page">
+  <div class="doc-title" id="pageTitle">Document</div>
+  <div class="doc-meta" id="pageMeta">Preview generated for demo purposes</div>
+  <div id="sections"></div>
+  <div class="watermark">This is a preview mockup. The live version will render the actual document content.</div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const name = params.get('name') || 'Document';
+const category = params.get('category') || 'other';
+
+const categoryLabels = {
+  bdr_output: 'BDR Output',
+  sales_presentation: 'Sales Presentation',
+  intro_call_brief: 'Intro Call Brief',
+  pricing_proposal: 'Pricing Proposal',
+  contract: 'Contract',
+  call_transcript: 'Call Transcript',
+  other: 'Other'
+};
+
+const sampleContent = {
+  bdr_output: {
+    sections: ['Contact Overview', 'Company Background', 'ICP Fit Analysis', 'Key Talking Points', 'Recommended Outreach Strategy', 'Draft Email'],
+    body: 'This document contains AI-generated sales research compiled from LinkedIn, Apollo, and public sources. It includes a detailed analysis of the contact\'s role, company financials, recent news, and personalised outreach recommendations.'
+  },
+  sales_presentation: {
+    sections: ['Company Introduction', 'Problem Statement', 'Our Solution', 'Case Studies', 'Pricing Overview', 'Next Steps'],
+    body: 'A comprehensive pitch deck covering our value proposition, competitive advantages, and client success stories. Tailored for enterprise sales conversations.'
+  },
+  intro_call_brief: {
+    sections: ['Meeting Objective', 'Attendees', 'Company Research', 'Key Questions to Ask', 'Potential Objections', 'Follow-up Actions'],
+    body: 'Pre-call preparation document with account research, stakeholder mapping, and strategic talking points for the upcoming introductory conversation.'
+  },
+  pricing_proposal: {
+    sections: ['Executive Summary', 'Scope of Services', 'Pricing Breakdown', 'Payment Terms', 'Timeline', 'Terms & Conditions'],
+    body: 'Commercial proposal with detailed pricing for the proposed engagement. Includes service tiers, optional add-ons, and volume discount structure.'
+  },
+  contract: {
+    sections: ['Parties', 'Scope of Work', 'Compensation', 'Term & Termination', 'Confidentiality', 'Signatures'],
+    body: 'Legal agreement between the parties outlining the terms of engagement, deliverables, payment schedule, intellectual property rights, and termination clauses.'
+  },
+  call_transcript: {
+    sections: ['Call Details', 'Attendees', 'Discussion Summary', 'Key Decisions', 'Action Items', 'Next Steps'],
+    body: 'Transcript from a recorded call. Includes speaker identification, timestamped sections, and an AI-generated summary of key discussion points and agreed next steps.'
+  },
+  other: {
+    sections: ['Section 1', 'Section 2', 'Section 3'],
+    body: 'Document content preview would appear here.'
+  }
+};
+
+const catLabel = categoryLabels[category] || category;
+const content = sampleContent[category] || sampleContent.other;
+
+document.getElementById('barTitle').textContent = name;
+document.getElementById('barCategory').textContent = catLabel;
+document.getElementById('pageTitle').textContent = name;
+document.getElementById('pageMeta').textContent = 'Category: ' + catLabel + '  |  Preview generated for demo purposes';
+
+const sectionsEl = document.getElementById('sections');
+content.sections.forEach((s, i) => {
+  const div = document.createElement('div');
+  div.className = 'section';
+  div.innerHTML = '<div class="section-head">' + (i+1) + '. ' + s + '</div>' +
+    '<div class="section-body">' + (i === 0 ? content.body : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.') + '</div>';
+  sectionsEl.appendChild(div);
+});
+</script>
+</body>
+</html>
